@@ -1,71 +1,42 @@
+console.log('js load')
+
+
 const openChatBtn = document.getElementById('open-chat');
-    const closeChatBtn = document.getElementById('close-chat');
-    const chatWindowEl = document.getElementById('chat-window');
-    const chatMessagesEl = document.getElementById('chat-messages');
-    const chatInputEl = document.getElementById('chat-input');
+const closeChatBtn = document.getElementById('close-chat'); // Agregamos el botón de cerrar chat
 
-    let chatVisible = false;
+const chatWindowEl = document.getElementById('chat-window');
+const chatMessagesEl = document.getElementById('chat-messages');
+const chatInputEl = document.getElementById('chat-input');
 
-    function addMessage(sender, message) {
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-      messageDiv.textContent = message;
-      chatMessagesEl.appendChild(messageDiv);
-    }
+// Función para agregar un mensaje al chat
+function addMessage(message) {
+    const p = document.createElement('p');
+    p.textContent = message;
+    chatMessagesEl.appendChild(p);
+}
 
-    openChatBtn.addEventListener('click', () => {
-      chatWindowEl.style.display = 'block';
-      chatVisible = true;
-    });
+// Agregar un listener al botón para abrir el chat
+openChatBtn.addEventListener('click', () => {
+    chatWindowEl.style.display = 'block';
+});
 
-    closeChatBtn.addEventListener('click', () => {
-      chatWindowEl.style.display = 'none';
-      chatVisible = false;
-    });
+// Agregar un listener al botón para cerrar el chat
+closeChatBtn.addEventListener('click', () => {
+    chatWindowEl.style.display = 'none';
+});
 
-    chatInputEl.addEventListener('keyup', async (event) => {
-      if (event.key === 'Enter') {
-        const userMessage = chatInputEl.value.trim();
-        if (userMessage) {
-          addMessage('user', userMessage);
 
-          // Llama a la función getCompletion con el mensaje del usuario
-          const response = await getCompletion(userMessage);
-
-          if (response) {
-            const botMessage = response.choices[0].text;
-            addMessage('bot', botMessage);
-          }
-
-          chatInputEl.value = '';
+// Agregar un listener al campo de entrada para enviar mensajes
+chatInputEl.addEventListener('keyup', (event) => {
+    if (event.key === 'Enter') {
+        const message = chatInputEl.value.trim();
+        if (message) {
+            addMessage(message);
+            chatInputEl.value = '';
         }
-      }
-    });
 
-    async function getCompletion(prompt) {
-    const API_KEY = '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';
-      try {
-        const response = await fetch(`https://api.openai.com/v1/completions`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: "text-davinci-003",
-            prompt: prompt,
-            max_tokens: 2000,
-          }),
-        });
-
-        if (response.ok) {
-          return await response.json();
-        } else {
-          console.error("Error en la respuesta de la API de OpenAI");
-          return null;
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        return null;
-      }
+        
     }
+});
+  
+  
